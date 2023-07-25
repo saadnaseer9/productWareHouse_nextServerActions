@@ -231,12 +231,11 @@ const DataTable = () => {
   const getCurrentPageData = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    console.log("importedData",importedData)
+    console.log("importedData", importedData);
     return importedData.slice(
       indexOfFirstItem,
       indexOfLastItem
     );
-
   };
   const goToPrevPage = () => {
     if (currentPage > 1) {
@@ -253,10 +252,15 @@ const DataTable = () => {
       setCurrentPage((prevPage) => prevPage + 1);
     }
   };
-
+  // Function to handle direct page jump
+  const handlePageJump = (page) => {
+    const maxPage = Math.ceil(importedData.length / itemsPerPage);
+    if (page >= 1 && page <= maxPage) {
+      setCurrentPage(page);
+    }
+  };
   return (
     <div>
-        
       <table style={{ width: "100%" }}>
         <thead>
           <tr style={{ background: "orange" }}>
@@ -373,15 +377,21 @@ const DataTable = () => {
             </div>
           )}
           {importedData.length > 0 ? (
-              <table
+            <table
               style={{
-                  width: "100%",
-                  textAlign: "center",
-                  marginTop: "20px",
-                }}
-                >
+                width: "100%",
+                textAlign: "center",
+                marginTop: "20px",
+              }}
+            >
               <thead>
-                <tr  style={{background:"black",color:"white",fontWeight:"600"}}>
+                <tr
+                  style={{
+                    background: "black",
+                    color: "white",
+                    fontWeight: "600",
+                  }}
+                >
                   {Object.keys(importedData[0]).map(
                     (key) => (
                       <th key={key}>{key}</th>
@@ -391,7 +401,13 @@ const DataTable = () => {
               </thead>
               <tbody>
                 {getCurrentPageData().map((item, index) => (
-                  <tr key={index}  style={{background:"orange",fontWeight:"600"}}>
+                  <tr
+                    key={index}
+                    style={{
+                      background: "orange",
+                      fontWeight: "600",
+                    }}
+                  >
                     {Object.values(item).map(
                       (value, colIndex) => (
                         <td key={colIndex}>{value}</td>
@@ -401,12 +417,31 @@ const DataTable = () => {
                 ))}
               </tbody>
             </table>
-          
           ) : null}
-          <div style={{display:"flex",justifyContent:"center",marginTop:"20px",marginBottom:"20px"}}>
+
+          <div>
+            <button onClick={goToPrevPage}>Previous</button>
+            {Array.from(
+              {
+                length: Math.ceil(
+                  importedData.length / itemsPerPage
+                ),
+              },
+              (_, i) => i + 1
+            ).map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageJump(page)}
+              >
+                {page}
+              </button>
+            ))}
+            <button onClick={goToNextPage}>Next</button>
+          </div>
+          {/* <div style={{display:"flex",justifyContent:"center",marginTop:"20px",marginBottom:"20px"}}>
           <button onClick={goToPrevPage} style={{marginRight:"20px",background:"black",color:"orange",padding:"1%",borderRadius:"10px",fontWeight:"600"}}>Previous</button>
             <button onClick={goToNextPage}  style={{color:"black",border:"2px solid orange",padding:"1%",borderRadius:"10px",fontWeight:"600"}}>Next</button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
